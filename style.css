@@ -1,0 +1,66 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body
+{   
+    font-size: 14px;
+    background-color: blanchedalmond;
+}
+.container
+{
+    background: white;
+    width: 500px;
+    padding: 50px;
+    margin: 50px auto 0;
+    border-top: 5px solid blue;
+    border-bottom: 5px solid blueviolet;
+    box-shadow: 0 0 7px 5px rgba(0, 0, 0, 0.5);
+}
+.container h2
+{
+    font-size: 24px;
+    line-height: 24px;
+    padding: 30px;
+    text-align: center;
+}
+.input-name
+{
+    width: 90%;
+    position: relative;
+    margin: 20px auto;
+}
+.lock
+{
+    padding: 8px auto;
+}
+.name
+{
+    width: 45%;
+    padding: 8px 0 8px 40px;
+}
+.input-name span
+{
+    margin-left: 35px;
+}
+.Fname
+{
+    width: 44.6%;
+    padding: 8px 0 8px 40px;
+}
+
+.text-name
+{
+    width: 100%;
+    padding: 8px 0 8px 40px;
+}
+.input-name i
+{   
+    padding: 4px 0 2px 4.5px;
+    position: absolute;
+    font-size: 23px;
+    color: blue; 
+    border-right: 2px solid #100f0f;
+}
