@@ -3,6 +3,13 @@
     padding: 10%;
     margin: 2%;
 }
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
 ul{
     background-color: teal;
     font-size: 40px;
