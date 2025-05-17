@@ -248,3 +248,31 @@ body
     background-color: darkgray;
 }
 
+@media (max-width: 480px)
+{
+    .container
+    {
+        width: 100%;
+        padding: 5px;
+    }
+    .input-name
+    {
+        margin-bottom: -10px;
+    }
+    .Fname
+    {
+        width: 100%;
+        padding: 8px 0 8px 40px;
+        margin-bottom: 10px;
+    }
+    .input-name span
+    {
+        padding: 0;
+        margin: 0;
+    }
+    .form-container
+    {
+        width: 100%;
+    }
+
+}
