@@ -4,20 +4,14 @@
     padding: 0;
     box-sizing: border-box;
 }
-body
-{   
-    font-size: 14px;
-    background-color: blanchedalmond;
-}
+
 body
 {
     background-image: url(../assets/geometric-gradient-futuristic-background_23-2149116406.avif);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: bottom;
-    height: 100vh;
-    color: white;
+    height: 90vh;
     background-color: rgba(0, 0, 0, 0.4);
     background-blend-mode: overlay;
     background-attachment: fixed;
