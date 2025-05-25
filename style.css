@@ -237,7 +237,7 @@ body
 
 .button
 {
-    background-color: blue;
+    background-color: rgb(128, 128, 236);
     color: white;
     height: 35px;
     line-height: 35px;
@@ -252,7 +252,7 @@ body
 }
 .button:hover
 {
-    background-color: darkgray;
+    background-color: rgb(244, 107, 107);
 }
 
 @media (max-width: 480px)
