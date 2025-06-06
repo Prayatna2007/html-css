@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FashionVerse | 3D Outfit Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #ff6b6b;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 8px;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .gallery-intro {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .gallery-intro h2 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .gallery-intro p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 3rem;
+        }
+
+        .outfit-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .outfit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .outfit-img {
+            height: 260px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .outfit-info {
+            padding: 20px;
+        }
+
+        .outfit-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .outfit-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .outfit-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #eef2f7;
+            color: #4a6491;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* 3D Viewer Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .viewer-container {
+            width: 85%;
+            height: 85%;
+            background: #1a1a1a;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        }
+
+        #outfit-viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .viewer-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 30px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .control-btn i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 100, 100, 0.8);
+            transform: rotate(90deg);
+        }
+
+        .close-btn i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .viewer-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            max-width: 300px;
+        }
+
+        .viewer-title {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .viewer-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            .viewer-container {
+                width: 95%;
+                height: 70%;
+            }
+            
+            .viewer-info {
+                max-width: 200px;
+                padding: 10px 15px;
+            }
+            
+            .viewer-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        footer {
+            background: #2c3e50;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            font-size: 1rem;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-tshirt"></i>
+            Fashion<span>Verse</span>
+        </div>
+        <p class="tagline">Explore outfits in immersive 3D</p>
+    </header>
+
+    <div class="container">
+        <div class="gallery-intro">
+            <h2>Discover Our Collection</h2>
+            <p>Click on any outfit to explore it in our interactive 3D viewer. Rotate, zoom, and examine every detail of these fashion designs.</p>
+        </div>
+
+        <div class="gallery">
+            <!-- Outfit 1 -->
+            <div class="outfit-card" data-outfit="1">
+                <div class="outfit-img" style="background: linear-gradient(45deg, #8e9eab, #eef2f3);"></div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Urban Chic Jacket</h3>
+                    <p class="outfit-description">Contemporary streetwear with modern tailoring and water-resistant fabric.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Casual</span>
+                        <span class="tag">Jacket</span>
+                        <span class="tag">Streetwear</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outfit 2 -->
+            <div class="outfit-card" data-outfit="2">
+                <div class="outfit-img" style="background: linear-gradient(45deg, #bdc3c7, #2c3e50);"></div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Elegant Evening Gown</h3>
+                    <p class="outfit-description">Flowing silk gown with intricate beadwork and a dramatic open back.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Formal</span>
+                        <span class="tag">Dress</span>
+                        <span class="tag">Evening</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outfit 3 -->
+            <div class="outfit-card" data-outfit="3">
+                <div class="outfit-img" style="background-image: url('https://i.pinimg.com/736x/4f/19/dd/4f19ddf7d929bd8f409d596641d350ba.jpg');"></div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Summer Breeze Dress</h3>
+                    <p class="outfit-description">Lightweight linen dress with floral embroidery and adjustable straps.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Summer</span>
+                        <span class="tag">Casual</span>
+                        <span class="tag">Dress</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outfit 4 -->
+            <div class="outfit-card" data-outfit="4">
+                <div class="outfit-img" style="background: linear-gradient(45deg, #a1c4fd, #c2e9fb);"></div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Professional Suit Set</h3>
+                    <p class="outfit-description">Tailored wool suit with modern cut and subtle pinstripes for the office.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Formal</span>
+                        <span class="tag">Business</span>
+                        <span class="tag">Suit</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D Viewer Modal -->
+    <div class="modal">
+        <div class="viewer-container">
+            <div id="outfit-viewer"></div>
+            <div class="viewer-info">
+                <h3 class="viewer-title">Urban Chic Jacket</h3>
+                <p class="viewer-description">Rotate to view details • Scroll to zoom • Drag to rotate</p>
+            </div>
+            <div class="viewer-controls">
+                <button class="control-btn" id="reset-view">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="control-btn" id="zoom-in">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="control-btn" id="zoom-out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+            </div>
+            <button class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+    </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2023 FashionVerse | Immersive 3D Outfit Explorer</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Collections</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Gallery interaction
+        const outfitCards = document.querySelectorAll('.outfit-card');
+        const modal = document.querySelector('.modal');
+        const closeBtn = document.querySelector('.close-btn');
+        const viewerTitle = document.querySelector('.viewer-title');
+        const viewerDescription = document.querySelector('.viewer-description');
+        
+        // Three.js variables
+        let scene, camera, renderer, controls;
+        let currentOutfit = null;
+        
+        // Initialize Three.js scene
+        function initThreeJS() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, 
+                viewerContainer.clientWidth / viewerContainer.clientHeight, 
+                0.1, 1000);
+            camera.position.z = 5;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(viewerContainer.clientWidth, viewerContainer.clientHeight);
+            viewerContainer.appendChild(renderer.domElement);
+            
+            // Add orbit controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            backLight.position.set(-5, -5, -5);
+            scene.add(backLight);
+            
+            // Add a simple grid helper
+            const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+            scene.add(gridHelper);
+            
+            // Add axis helper
+            const axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+            
+            // Start animation loop
+            animate();
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // Load outfit model based on selection
+        function loadOutfit(outfitId) {
+            // Clear previous outfit
+            while(scene.children.length > 0){ 
+                scene.remove(scene.children[0]); 
+            }
+            
+            // Add lights back
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            backLight.position.set(-5, -5, -5);
+            scene.add(backLight);
+            
+            // Create placeholder geometry (in a real app, you'd load GLTF/OBJ models here)
+            let geometry, material, mesh;
+            
+            switch(outfitId) {
+                case '1': // Urban Jacket
+                    geometry = new THREE.BoxGeometry(2, 3, 0.5);
+                    material = new THREE.MeshStandardMaterial({ 
+                        color: 0x3498db,
+                        roughness: 0.3,
+                        metalness: 0.2
+                    });
+                    break;
+                case '2': // Evening Gown
+                    geometry = new THREE.ConeGeometry(1.5, 4, 8);
+                    material = new THREE.MeshStandardMaterial({ 
+                        color: 0x9b59b6,
+                        roughness: 0.5
+                    });
+                    break;
+                case '3': // Summer Dress
+                    geometry = new THREE.SphereGeometry(1.5, 16, 16);
+                    material = new THREE.MeshStandardMaterial({ 
+                        color: 0xe74c3c,
+                        roughness: 0.6
+                    });
+                    break;
+                case '4': // Professional Suit
+                    geometry = new THREE.CylinderGeometry(1, 1, 3, 16);
+                    material = new THREE.MeshStandardMaterial({ 
+                        color: 0x2c3e50,
+                        roughness: 0.4,
+                        metalness: 0.3
+                    });
+                    break;
+                default:
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+            }
+            
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            
+            // Add grid and axes back
+            const gridHelper = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+            scene.add(gridHelper);
+            
+            const axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+        }
+        
+        // Set up event listeners
+        outfitCards.forEach(card => {
+            card.addEventListener('click', () => {
+                currentOutfit = card.getAttribute('data-outfit');
+                
+                // Update viewer title
+                const outfitName = card.querySelector('.outfit-name').textContent;
+                viewerTitle.textContent = outfitName;
+                
+                // Load outfit
+                loadOutfit(currentOutfit);
+                
+                // Show modal
+                modal.classList.add('active');
+            });
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside the viewer
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        
+        // Controls
+        document.getElementById('reset-view').addEventListener('click', () => {
+            controls.reset();
+        });
+        
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            camera.fov -= 5;
+            camera.updateProjectionMatrix();
+        });
+        
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            camera.fov += 5;
+            camera.updateProjectionMatrix();
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (renderer) {
+                camera.aspect = viewerContainer.clientWidth / viewerContainer.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(viewerContainer.clientWidth, viewerContainer.clientHeight);
+            }
+        });
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewerContainer = document.getElementById('outfit-viewer');
+            if (viewerContainer) {
+                initThreeJS();
+            }
+        });
+    </script>
+</body>
+</html>

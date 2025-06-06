@@ -1,0 +1,31 @@
+/* *{
+    padding: 0;
+    margin: 0;
+} */
+a{
+    background-color: antiquewhite;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 1.2s all ease-in-out;
+}
+/* default sstate :link (pseudo class) */
+a:link{
+    color: aliceblue;
+}
+/* visited state :visited */
+a:visited{
+    color: blue;
+    font-size: 20px;
+}
+/* hover state -> :hover */
+a:hover{
+    color: purple;
+    font-size: 30px;
+    border-radius: 200px;
+}
+/* active state -> : hover */
+a:active{
+    color: rgb(49, 52, 52);
+    font-size: 20px;
+}

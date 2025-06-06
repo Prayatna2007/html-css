@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Outfit Video Animation Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .logo span {
+            color: #ff6b6b;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+        
+        .gallery-intro {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .gallery-intro h2 {
+            font-size: 2.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .gallery-intro p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 35px;
+            margin-bottom: 4rem;
+        }
+        
+        .outfit-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .outfit-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .outfit-img {
+            height: 320px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .outfit-card:hover .video-preview {
+            transform: scale(1.05);
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .play-icon i {
+            color: #4a6491;
+            font-size: 30px;
+            margin-left: 5px;
+        }
+        
+        .outfit-card:hover .play-icon {
+            opacity: 1;
+        }
+        
+        .outfit-info {
+            padding: 25px;
+        }
+        
+        .outfit-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        
+        .outfit-description {
+            color: #666;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .outfit-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background: #eef2f7;
+            color: #4a6491;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        /* Animation Viewer */
+        #viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        #viewer-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .viewer-container {
+            width: 90%;
+            max-width: 1100px;
+            height: 85vh;
+            background: #1a1a1a;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+            transform: scale(0.9);
+            transition: transform 0.5s ease;
+        }
+        
+        #viewer-overlay.active .viewer-container {
+            transform: scale(1);
+        }
+        
+        .viewer-header {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .viewer-title {
+            font-size: 2.2rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .viewer-description {
+            color: #ddd;
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+        
+        .animation-box {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #outfit-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+            transform: scale(1) rotateX(0deg) rotateY(0deg);
+            transition: transform 0.3s ease;
+            cursor: grab;
+        }
+        
+        #outfit-video:active {
+            cursor: grabbing;
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            z-index: 20;
+        }
+        
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 100, 100, 0.8);
+            transform: rotate(90deg);
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px 25px;
+            border-radius: 30px;
+            z-index: 20;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 15;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .video-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loader {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        
+        .video-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 20;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ff6b6b;
+            transition: width 0.2s ease;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .video-controls {
+                bottom: 20px;
+                padding: 12px 20px;
+                gap: 12px;
+            }
+            
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .viewer-header {
+                padding: 15px;
+            }
+            
+            .viewer-title {
+                font-size: 1.8rem;
+            }
+            
+            .viewer-description {
+                font-size: 1rem;
+            }
+            
+            .video-controls {
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            
+            .close-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .instructions {
+                font-size: 0.9rem;
+                bottom: 100px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-video"></i>
+                Fashion<span>Video</span>
+            </div>
+            <p class="tagline">Experience outfits with realistic video animations - Click any outfit to explore!</p>
+        </header>
+
+        <div class="gallery-intro">
+            <h2>Video Collection Showcase</h2>
+            <p>Click on any outfit to explore it in our interactive video viewer. Watch realistic movements, zoom in for details, and experience fashion like never before.</p>
+        </div>
+
+        <div class="gallery">
+            <!-- Outfit 1 -->
+            <div class="outfit-card" data-outfit="1" data-title="Urban Chic Jacket" data-desc="Contemporary streetwear with modern tailoring">
+                <div class="outfit-img">
+                    <video class="video-preview" muted loop playsinline poster="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWVucyUyMGphY2tldHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60">
+                        <source src="https://assets.codepen.io/3364143/screen-record-1.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Urban Chic Jacket</h3>
+                    <p class="outfit-description">Contemporary streetwear with modern tailoring and water-resistant fabric.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Casual</span>
+                        <span class="tag">Jacket</span>
+                        <span class="tag">Streetwear</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outfit 2 -->
+            <div class="outfit-card" data-outfit="2" data-title="Elegant Evening Gown" data-desc="Flowing silk with intricate beadwork">
+                <div class="outfit-img">
+                    <video class="video-preview" muted loop playsinline poster="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZXZlbmluZyUyMGdvd258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60">
+                        <source src="https://assets.codepen.io/3364143/screen-record-2.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Elegant Evening Gown</h3>
+                    <p class="outfit-description">Flowing silk gown with intricate beadwork and a dramatic open back.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Formal</span>
+                        <span class="tag">Dress</span>
+                        <span class="tag">Evening</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outfit 3 -->
+            <div class="outfit-card" data-outfit="3" data-title="Summer Breeze Dress" data-desc="Lightweight linen with floral embroidery">
+                <div class="outfit-img">
+                    <video class="video-preview" muted loop playsinline poster="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3VtbWVyJTIwZHJlc3N8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60">
+                        <source src="https://assets.codepen.io/3364143/screen-record-3.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                <div class="outfit-info">
+                    <h3 class="outfit-name">Summer Breeze Dress</h3>
+                    <p class="outfit-description">Lightweight linen dress with floral embroidery and adjustable straps.</p>
+                    <div class="outfit-tags">
+                        <span class="tag">Summer</span>
+                        <span class="tag">Casual</span>
+                        <span class="tag">Dress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Animation Viewer Overlay -->
+    <div id="viewer-overlay">
+        <div class="viewer-container">
+            <div class="viewer-header">
+                <h2 class="viewer-title">Urban Chic Jacket</h2>
+                <p class="viewer-description">Contemporary streetwear with modern tailoring</p>
+            </div>
+            
+            <div class="animation-box">
+                <div class="video-container">
+                    <video id="outfit-video" muted loop playsinline></video>
+                    <div class="video-overlay" id="video-overlay">
+                        <div class="loader"></div>
+                        <div class="loading-text">Loading video experience...</div>
+                    </div>
+                    <div class="video-progress">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <i class="fas fa-expand-arrows-alt"></i> Drag to rotate • <i class="fas fa-search-plus"></i> Scroll to zoom
+            </div>
+            
+            <div class="video-controls">
+                <button class="control-btn" id="play-pause">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="control-btn" id="zoom-in">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="control-btn" id="zoom-out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="control-btn" id="reset-view">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="control-btn" id="mute-unmute">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+            
+            <button class="close-btn" id="close-viewer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2023 FashionVideo | Interactive Outfit Explorer</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#"><i class="fas fa-images"></i> Collections</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-lock"></i> Privacy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Get DOM elements
+        const viewerOverlay = document.getElementById('viewer-overlay');
+        const closeBtn = document.getElementById('close-viewer');
+        const outfitVideo = document.getElementById('outfit-video');
+        const videoOverlay = document.getElementById('video-overlay');
+        const viewerTitle = document.querySelector('.viewer-title');
+        const viewerDesc = document.querySelector('.viewer-description');
+        const progressBar = document.getElementById('progress-bar');
+        const playPauseBtn = document.getElementById('play-pause');
+        const muteUnmuteBtn = document.getElementById('mute-unmute');
+        const resetBtn = document.getElementById('reset-view');
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+        
+        // Video sources for each outfit
+        const outfitVideos = {
+            1: {
+                title: "Urban Chic Jacket",
+                desc: "Contemporary streetwear with modern tailoring",
+                src: "/Users/prayatnashrestha/Downloads/videoframe_2422.png"
+            },
+            2: {
+                title: "Elegant Evening Gown",
+                desc: "Flowing silk with intricate beadwork",
+                src: "https://assets.codepen.io/3364143/screen-record-2.mp4"
+            },
+            3: {
+                title: "Summer Breeze Dress",
+                desc: "Lightweight linen with floral embroidery",
+                src: "https://assets.codepen.io/3364143/screen-record-3.mp4"
+            }
+        };
+        
+        // Current state
+        let currentOutfit = null;
+        let scale = 1;
+        let isPlaying = true;
+        let isMuted = true;
+        let isDragging = false;
+        let startX, startY;
+        let rotationX = 0;
+        let rotationY = 0;
+        
+        // Set up event listeners for gallery cards
+        document.querySelectorAll('.outfit-card').forEach(card => {
+            const videoPreview = card.querySelector('.video-preview');
+            
+            // Play video preview on card hover
+            card.addEventListener('mouseenter', () => {
+                videoPreview.play();
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                videoPreview.pause();
+                videoPreview.currentTime = 0;
+            });
+            
+            card.addEventListener('click', () => {
+                const outfitId = card.getAttribute('data-outfit');
+                const title = card.getAttribute('data-title');
+                const desc = card.getAttribute('data-desc');
+                
+                currentOutfit = outfitId;
+                
+                // Update viewer content
+                viewerTitle.textContent = title;
+                viewerDesc.textContent = desc;
+                
+                // Show loading overlay
+                videoOverlay.classList.remove('hidden');
+                
+                // Set video source
+                outfitVideo.src = outfitVideos[outfitId].src;
+                outfitVideo.load();
+                
+                // Show viewer
+                viewerOverlay.classList.add('active');
+                
+                // Reset transformations
+                scale = 1;
+                rotationX = 0;
+                rotationY = 0;
+                updateVideoTransform();
+            });
+        });
+        
+        // When video metadata is loaded
+        outfitVideo.addEventListener('loadedmetadata', () => {
+            // Hide overlay and play
+            setTimeout(() => {
+                videoOverlay.classList.add('hidden');
+                outfitVideo.play();
+                isPlaying = true;
+                updatePlayPauseIcon();
+            }, 1000);
+        });
+        
+        // Video progress
+        outfitVideo.addEventListener('timeupdate', () => {
+            const progress = (outfitVideo.currentTime / outfitVideo.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+        });
+        
+        // Play/Pause
+        playPauseBtn.addEventListener('click', () => {
+            if (outfitVideo.paused) {
+                outfitVideo.play();
+                isPlaying = true;
+            } else {
+                outfitVideo.pause();
+                isPlaying = false;
+            }
+            updatePlayPauseIcon();
+        });
+        
+        // Mute/Unmute
+        muteUnmuteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            outfitVideo.muted = isMuted;
+            muteUnmuteBtn.innerHTML = isMuted ? 
+                '<i class="fas fa-volume-mute"></i>' : 
+                '<i class="fas fa-volume-up"></i>';
+        });
+        
+        // Reset view
+        resetBtn.addEventListener('click', () => {
+            scale = 1;
+            rotationX = 0;
+            rotationY = 0;
+            updateVideoTransform();
+        });
+        
+        // Zoom in
+        zoomInBtn.addEventListener('click', () => {
+            if (scale < 2.5) {
+                scale += 0.2;
+                updateVideoTransform();
+            }
+        });
+        
+        // Zoom out
+        zoomOutBtn.addEventListener('click', () => {
+            if (scale > 0.5) {
+                scale -= 0.2;
+                updateVideoTransform();
+            }
+        });
+        
+        // Close viewer
+        closeBtn.addEventListener('click', () => {
+            viewerOverlay.classList.remove('active');
+            outfitVideo.pause();
+            isPlaying = false;
+            updatePlayPauseIcon();
+        });
+        
+        // Mouse drag for rotation
+        outfitVideo.addEventListener('mousedown', startDrag);
+        outfitVideo.addEventListener('touchstart', startDrag);
+        
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+        
+        // Mouse wheel for zoom
+        outfitVideo.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                // Zoom in
+                if (scale < 2.5) scale += 0.1;
+            } else {
+                // Zoom out
+                if (scale > 0.5) scale -= 0.1;
+            }
+            updateVideoTransform();
+        });
+        
+        // Functions for drag rotation
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.clientX || e.touches[0].clientX;
+            startY = e.clientY || e.touches[0].clientY;
+            outfitVideo.style.cursor = 'grabbing';
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            const currentX = e.clientX || e.touches[0].clientX;
+            const currentY = e.clientY || e.touches[0].clientY;
+            
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+            
+            rotationY += deltaX * 0.5;
+            rotationX += deltaY * 0.5;
+            
+            // Limit vertical rotation
+            rotationX = Math.max(-60, Math.min(60, rotationX));
+            
+            startX = currentX;
+            startY = currentY;
+            
+            updateVideoTransform();
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            outfitVideo.style.cursor = 'grab';
+        }
+        
+        function updateVideoTransform() {
+            outfitVideo.style.transform = `scale(${scale}) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+        }
+        
+        function updatePlayPauseIcon() {
+            playPauseBtn.innerHTML = isPlaying ? 
+                '<i class="fas fa-pause"></i>' : 
+                '<i class="fas fa-play"></i>';
+        }
+        
+        // Initialize gallery video previews
+        document.querySelectorAll('.video-preview').forEach(video => {
+            video.play();
+        });
+    </script>
+</body>
+</html>
