@@ -1,0 +1,21 @@
+table,th,td{
+    background-color: blueviolet;
+    border: 2px solid rebeccapurple;
+    /* border-collapse: collapse; */
+    border-radius: 10px;
+}
+th,td{
+    background-color: azure;
+    
+    padding: 20px 30px 4px 4px;
+    text-align: center;
+}
+table{
+    width: 40%;
+}
+.my_id{
+    width: 10%;
+}
+.my_name{
+    width: 60%;
+}
