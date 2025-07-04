@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML FORM</title>
+</head>
+<body>
+    <h1>Register Form</h1>
+    <!-- main form element -->
+     <form autocomplete="on" action="" onsubmit="alert('Form is Submitted.')" enctype="multipart/form-data">
+        <table class="center" style="width: 80%;">
+        <tr style="height: 40px;">
+        <td><label for="user-name">Username</label></td>
+        <td><input id="user-name" type="text" placeholder="Enter your user-name" name="username" required=""></td>
+        </tr>
+        <tr style="height: 40px;">
+        <td><label for="email">Email</label></td>
+        <td><input id="email" type="email" placeholder="xyz@gmail.com" name="email" required="" ></td>
+        </tr>
+        <tr style="height: 40px;">
+        <td><label for="password">Password</label></td>
+        <td><input type="password" name="password" id="password" minlength="8"></td>
+        </tr>
+        <tr style="height: 40px;">
+        <td><label for="birthdate">Birth_Date</label></td>
+        <td><input type="date" name="birthdate" id="birthdate" required></td>
+        </tr>
+
+        
+        <tr style="height: 40px;">
+        <td colspan="2">
+            <b>Select Your Gender</b>
+            <div>
+                <label for="">
+                    <input type="radio" name="gender" value="male">Male
+                </label>
+                <label for="">
+                    <input type="radio" name="gender" value="female">Female
+                </label>
+                <label for="">
+                    <input type="radio" name="gender" value="others">Others
+                </label>
+            </div>
+        </td>
+        </tr>
+        <tr style="height: 40px;">
+        <td colspan="2">
+            <label>Fav_Programming Language</label>
+            <select name="Fav_Prog_Lang" id="">
+                <option >Select</option>
+                <option value="C">C</option>
+                <option value="C++">C++</option>
+                <option value="C#">C#</option>
+                <option value="Python">Python</option>
+                <option value="Javascript">JavScript</option>
+                <option value="Ruby">Ruby</option>
+
+            </select>
+
+        </td>
+        </tr>
+
+        <tr style="height: 40px;">
+        <td colspan="2"><Label for="terms">
+        <input id="terms" type="checkbox" name="terms" required>I agree to the terms and conditions.
+        </Label>
+        </td>
+        </tr>
+
+        <tr style="height: 40px align-items: center'">
+        <td><input type="submit" value="Register"></td>
+        </tr>
+
+        <tr>
+            <td>
+                <label >Pick Your Profile
+                    <input type="file" name="Profile" accept=".jpeg, .png, .jpg, .gif" multiple>
+                </label>
+            </td>
+        </tr>
+        </table>
+     </form>
+
+    <!-- output tag demonstration -->
+    <h4>Output Tag</h4>
+     <form oninput="x.value = parseInt(a.value) + parseInt(b.value)">
+        <input type="range" id="a" name="a" value="10"> +
+        <input type="number" id="b" name="b" value="40"> =
+        <output name="x" for="a b"></output>
+
+     </form>
+</body>
+</html>
