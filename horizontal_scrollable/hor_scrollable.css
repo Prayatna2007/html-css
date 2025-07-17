@@ -1,0 +1,50 @@
+    body{
+        background-color: rgb(85, 120, 76);
+        padding-top: 30px;
+    }
+    h1{
+        text-align: center;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+    .container {
+      width: 100%;
+      height: 230px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      border: 2px solid #333;
+      background-color: #f8f8f8;
+      padding: 10px;
+      border-radius: 20px;
+      box-sizing: border-box;
+      position: relative;
+      margin-top: 200px;
+    }
+
+    .box {
+      display: inline-block;
+      height: 200px;
+      width: 200px;
+      margin-right: 10px;
+      background-color: steelblue;
+      border-radius: 8px;
+      box-shadow: 2 2 4px rgba(237, 79, 79, 0.5);
+      vertical-align: top;
+    }
+
+    /* Make the 3rd and 15th box sticky */
+    .box:nth-child(3) {
+      position: sticky;
+      left: 0;
+      height: 200px;
+      width:100px;
+      background-color: rgb(67, 4, 78);
+    }
+      .box:nth-child(15) {
+      position: sticky;
+      right: 0;
+      height: 200px;
+      width:100px;
+      background-color: rgb(67, 4, 78);
+     
+    }
