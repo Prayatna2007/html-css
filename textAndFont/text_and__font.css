@@ -1,0 +1,26 @@
+p{
+    font-size: 1.5rem;
+    text-decoration: underline;
+    letter-spacing: 9px;
+    word-spacing: 15px;
+    text-align: justify;
+    line-height: 90px;
+    text-indent: 200px;
+    /* text-shadow: x-offset y-offset  blur radius color; */
+    text-shadow: -6px -6px 5px navajowhite;
+    font-family: cursive;
+}
+#overline{
+    text-decoration: overline;
+    text-decoration-style: wavy;
+    text-decoration-color: blue;
+    text-decoration-thickness: 5px ;
+    text-transform: uppercase;
+}
+#box:hover #overline{
+    transform: rotate(180deg);
+}
+#overthrough{
+    text-decoration: line-through double green 5px;
+    text-transform: capitalize;
+}
