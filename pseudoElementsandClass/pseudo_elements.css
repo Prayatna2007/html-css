@@ -1,0 +1,29 @@
+/* pseudo element :: first-line */
+p::first-line{
+    color: blue;
+    font-style: italic;
+}
+
+p.desc::first-letter{
+    font-size: 60px;
+    color: teal;
+    font-style: normal;
+}
+
+p::before{
+    content: "Ronaldo SUIIIIIIIIIIIIIIIIIII";
+}
+
+p::after{
+    content: "HALA MADRID";
+}
+
+p::selection{
+    background-color: blanchedalmond;
+    color: red;
+}
+
+li::marker{
+    color: rgb(129, 16, 182);
+    font-size: larger;
+}

@@ -1,0 +1,73 @@
+#tooltip{
+    height: 200px;
+    width: 600px;
+    background-color: rgb(232, 139, 17);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+#tooltip-content{
+    background-color: aqua;
+    color: rgb(198, 22, 22);
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: -400px;
+    transition: 1s left ease-in-out;
+}
+/* using pseudo class : hover on parent */
+#tooltip:hover #tooltip-content{
+    left: 40px;
+}
+
+/* changing background color when hovering same element */
+#login-btn:hover{
+    background-color: blueviolet;
+}
+
+.abc:first-child{
+    color: chartreuse;
+}
+
+.abc:last-child{
+    color: aquamarine;
+}
+.abc:nth-child(3){
+    color: beige;
+}
+
+h4:last-child{
+    font-size: 200px;
+}
+
+h4:nth-child(4){
+    font-size: 400px;
+}
+
+h4:first-child{
+    font-size: 10px;
+    color: brown;
+}
+
+/* default state of anchor tag */
+a:link{
+    color: orangered;
+}
+
+a:visited{
+    color: darkgray;
+}
+a:active{
+    color: bisque;
+}
+a:hover{
+    color: blue;
+}
