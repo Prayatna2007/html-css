@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Style Gallery Transition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Playfair+Display:wght@700&family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0f0f 0%, #2a2a2a 100%);
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .transition-container {
+            text-align: center;
+            color: white;
+            perspective: 1000px;
+        }
+        
+        .main-text {
+            font-size: 4.5rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transform: translateY(30px) rotateX(30deg);
+            animation: fadeInUp 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: linear-gradient(90deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .sub-text {
+            font-size: 2.8rem;
+            font-family: 'Playfair Display', serif;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+            margin-top: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight {
+            color: #ff4d4d;
+            font-style: italic;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff4d4d, #ff9999);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: underlineExpand 0.8s ease-out 1s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+        
+        @keyframes underlineExpand {
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, rgba(255,77,77,0.2) 0%, transparent 70%);
+            opacity: 0;
+            animation: glowFade 2s ease-out 0.8s forwards;
+        }
+        
+        @keyframes glowFade {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="transition-container">
+        <div class="main-text">Interactive Style Gallery</div>
+        <div class="sub-text"><span class="highlight">Vibe</span>Couture</div>
+    </div>
+</body>
+</html>
