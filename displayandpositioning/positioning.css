@@ -1,0 +1,39 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+#title{
+    position: absolute;
+    color: orange;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: rgb(10, 10, 9);
+    padding: 10px;
+    border-radius: 10px;
+}
+#content{
+    background-color: aquamarine;
+    padding: 50px;
+    font-size: 50px;
+    width: 100vw;
+    height: 100vh;
+}
+
+#fab{
+    height: 80px;
+    width: 80px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    right: 20px;
+    cursor: pointer;
+}
+
+#fab i{
+    font-size: 60px;
+}

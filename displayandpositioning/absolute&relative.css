@@ -1,0 +1,27 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+.card{
+    height: 350px;
+    width: 300px;
+    background-color: blueviolet;
+    color: whitesmoke;
+    border-radius: 20px;
+    box-shadow: 4px 4px 10px 5px rgba(0,0,0,0.6);
+    padding: 20px;
+    position: relative;   
+}
+.card button{
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: bisque;
+    color: rgb(12, 8, 2);
+    cursor: pointer;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
