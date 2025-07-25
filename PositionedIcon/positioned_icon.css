@@ -1,0 +1,140 @@
+.icon{
+    background-color: rgb(37, 37, 140);
+    padding: 10px 15px 15px;
+    border-radius: 20px 0px 0px 20px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: fixed;
+    top: 45%;
+    right: -100px;
+    transition: 0.4s all ease-in-out;
+}
+.icon:hover{
+    right: 0px;
+    cursor: pointer;
+}
+.icon i{
+    color: rgb(6,6, 107);
+    background-color: white;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.icon1{
+    background-color: rgb(16, 100, 85);
+    padding: 10px 15px 15px;
+    border-radius: 0px 20px 20px 0px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: fixed;
+    top: 45%;
+    left: -100px;
+    transition: 0.4s all ease-in-out;
+}
+.icon1:hover{
+    left: 0px;
+    cursor: pointer;
+}
+.icon1 i{
+    color: rgb(6,6, 107);
+    background-color: white;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.animation-container{
+    height: 400px;
+    width: 400px;
+    background-color: rgb(166, 195, 243);
+    border-radius: 10px;
+    padding: 30px;
+    margin: 40px;
+    position: relative;
+}
+.ball{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    
+}
+.ball:first-child{
+    background-color: rgb(1, 1, 1);
+    animation: 2s pulse linear infinite;
+    
+}
+.ball:nth-child(2){
+    background-color: rgb(74, 27, 121);
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    margin-top:280px;
+    margin-left: 300px;
+    animation: 2s customspin linear infinite;
+    
+}
+.ball:last-child{
+    background-color: rgb(80, 202, 19);
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    animation: 3s  customTranslate linear infinite;
+
+}
+
+/* spin animation  */
+@keyframes pulse{
+    from{   
+        transform: scale(1)
+    }
+    to{
+        transform: scale(2);
+    }
+}
+
+@keyframes customspin{
+    0%{   
+        transform: rotate(0deg);
+        background-color: blueviolet;
+    }
+    100%{
+        transform: rotate(360deg);
+        background-color: blanchedalmond;
+    }
+}
+
+@keyframes customTranslate{
+    0%{   
+        top: -30px;
+        right: -30px;
+    }
+    25%{
+        top: 430px;
+        right: -30px;
+
+    }
+    50%{
+        right: 430px;
+        top: 430px;
+    }
+    75%{
+        top: -30px;
+        right: 430px;
+    }
+    100%{
+        top: -30px;
+        right: -30px;
+    }
+}
