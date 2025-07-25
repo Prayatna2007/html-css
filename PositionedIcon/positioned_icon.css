@@ -138,3 +138,8 @@
         right: -30px;
     }
 }
+
+.ball:last-child:hover {
+    animation-play-state: paused;
+}
+
